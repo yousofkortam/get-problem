@@ -13,7 +13,6 @@ public class Problem {
     String outputSpecification;
     String note;
     List<String> tags;
-
     List<Sample> samples;
 
     public Problem() {}

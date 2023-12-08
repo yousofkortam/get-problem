@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Problem Details</title>
+    <script th:type="text/x-mathjax-config" th:inline="javascript">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [["$$$","$$$"]], displayMath: [["$$$$$$","$$$$$$"]]}
+        });
+        MathJax.Hub.Register.StartupHook("End", function () {
+            Codeforces.runMathJaxListeners();
+        });
+    </script>
+    <script th:type="text/javascript" async
+            src="https://mathjax.codeforces.org/MathJax.js?config=TeX-AMS_HTML-full"></script>
+    <link th:rel="stylesheet" href="https://codeforces.org/s/96598/css/problem-statement.css" th:type="text/css">
+</head>
+<body>
+<h1>Problem Details</h1>
+
+<div>
+    <strong>Title:</strong> <span th:text="${problem.title}"></span>
+</div>
+
+<div>
+    <strong>Time per Test:</strong> <span th:text="${problem.timePerTest}"></span>
+</div>
+
+<div>
+    <strong>Memory per Test:</strong> <span th:text="${problem.memoryPerTest}"></span>
+</div>
+
+<div>
+    <strong>Input Type:</strong> <span th:text="${problem.inputType}"></span>
+</div>
+
+<div>
+    <strong>Output Type:</strong> <span th:text="${problem.outputType}"></span>
+</div>
+
+<div>
+    <strong>Problem Description:</strong> <span th:utext="${problem.problemDescription}"></span>
+</div>
+
+<div>
+    <strong>Input Specification:</strong> <span th:utext="${problem.inputSpecification}"></span>
+</div>
+
+<div>
+    <strong>Output Specification:</strong> <span th:utext="${problem.outputSpecification}"></span>
+</div>
+
+<div>
+    <strong>Note:</strong> <span th:utext="${problem.note}"></span>
+</div>
+
+<div>
+    <strong>Tags:</strong>
+    <ul>
+        <li th:each="tag : ${problem.tags}" th:text="${tag}"></li>
+    </ul>
+</div>
+</body>
+</html>

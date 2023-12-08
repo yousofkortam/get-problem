@@ -5,27 +5,27 @@ import com.example.webscrapping.model.Sample;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
+@Controller
 public class problemController {
 
     final String problemSetUrl = "https://codeforces.com/problemset/problem";
 
-    @GetMapping("/problem/{contestId}/{problemId}")
-    public Problem getProblem(@PathVariable int contestId, @PathVariable char problemId) {
+    public Problem getProblem(int contestId, char problemId) {
         try {
             final Document document = Jsoup.connect(problemSetUrl + "/" + contestId + "/" + problemId).get();
             var title = document.select(".header > .title").text().substring(3);
-            var timeLimit = document.select(".header > .time-limit").text().substring(19, 20);
-            var memoryLimit = document.select(".header > .memory-limit").text().substring(21, 24);
-            var pageHtml = document.select(".problem-statement").outerHtml(); // all problem statement HTML that contains description, input, output, samples, and notes
+            var timeLimit = document.select(".header > .time-limit").text().substring(19);
+            var memoryLimit = document.select(".header > .memory-limit").text().substring(21);
+            // var pageHtml = document.select(".problem-statement").outerHtml(); // all problem statement HTML that contains description, input, output, samples, and notes
             var inputFile = document.select(".header > .input-file").text().substring(5);
             var outputFile = document.select(".header > .output-file").text().substring(6);
             var inputSpecification = document.select(".input-specification > p").outerHtml();
@@ -34,15 +34,15 @@ public class problemController {
             List<String> tags = document.select(".tag-box")
                     .stream()
                     .map(Element::text)
-                    .collect(Collectors.toList());;
+                    .collect(Collectors.toList());
             // TODO
             List<Sample> allSamples = new ArrayList<>();
-            var samples = document.select(".sample-test");
+            var samples = document.select(".sample-tests > .sample-test");
             for (var sample : samples) {
                 var inputs = sample.select(".input > pre");
                 var outputs = sample.select(".output > pre");
                 for (int i = 0; i < inputs.size(); i++) {
-                    Sample s = new Sample(inputs.get(i).text(), outputs.get(i).text());
+                    Sample s = new Sample(inputs.get(i).outerHtml(), outputs.get(i).outerHtml());
                     allSamples.add(s);
                 }
             }
@@ -52,6 +52,13 @@ public class problemController {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    @GetMapping("/problem/{contestId}/{problemId}")
+    public String getProblemMvc(@PathVariable int contestId, @PathVariable char problemId, Model model) {
+        Problem problem = getProblem(contestId, problemId);
+        model.addAttribute("problem", problem);
+        return "problem-details";
     }
 
 }
